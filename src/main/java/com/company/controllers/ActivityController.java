@@ -1,6 +1,7 @@
 package com.company.controllers;
 
 import com.company.repositories.ActivityRepository;
+import com.mongodb.MongoWriteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import spark.Request;
@@ -15,12 +16,17 @@ public class ActivityController {
     @Autowired
     private ActivityRepository activityRepository;
 
-    public String createOrUpdateActivity(Request req, Response resp) {
+    public String saveActivity(Request req, Response resp) {
         String uuid = req.queryParams("uuid");
         int activity = parseInt(req.queryParams("activity"));
 
-        String result = activityRepository.createOrUpdate(uuid, activity);
-        return buildResponse(result);
+        try {
+            activityRepository.save(uuid, activity);
+            return buildResponse("Inserted");
+        } catch (MongoWriteException e) {
+            resp.status(418);
+            return buildResponse("Failed to write to database");
+        }
     }
 
 }

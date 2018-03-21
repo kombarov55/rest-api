@@ -5,7 +5,7 @@ public class Utils {
     private Utils() { }
 
     public static String buildResponse(String message) {
-        return String.format("{ status: \"OK\", message: \"%s\"}", message);
+        return String.format("{ status: \"OK\", result: \"%s\"}", message);
     }
 
     public static String buildErrorResponse(String message) {

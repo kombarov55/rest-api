@@ -3,12 +3,15 @@ package com.company.repositories;
 import com.company.controllers.ControllerException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -27,11 +30,15 @@ public class SyncRepository implements ApplicationListener<ContextRefreshedEvent
 
     public String saveOrUpdate(String uuid, String data) throws ControllerException {
 
-        validateSize(data);
+        if (invalidSize(data)) throw new ControllerException("Json size is greater than 10Kb");
 
         Document doc = Document.parse(data);
 
-        validateDocument(doc);
+        if (invalidDocStructure(doc)) throw new ControllerException("Json does not contain required 'money' or 'country fields'");
+
+        if (coll.count(Filters.eq("_id", uuid)) == 0) {
+            doc.append("creationDate", new Date());
+        }
 
         UpdateResult result = coll.replaceOne(
                 eq("_id", uuid),
@@ -54,22 +61,12 @@ public class SyncRepository implements ApplicationListener<ContextRefreshedEvent
                 "";
     }
 
-    /**
-     * Размер json меньше 10Кб?
-     * @param json json
-     */
-    private void validateSize(String json) {
-        if (json.length() * 2 > (1024 * 10)) throw new ControllerException("Json size is greater than 10Kb");
+    private boolean invalidSize(String json) {
+        return json.length() * 2 > (1024 * 10);
     }
 
-    private void validateDocument(Document document) {
-        if (document.getInteger("money") == null) {
-            throw new ControllerException("no \"money\" field in Json.");
-        }
-
-        if (document.get("country") == null) {
-            throw new ControllerException("no \"country\" field in Json.");
-        }
+    private boolean invalidDocStructure(Document document) {
+        return document.get("money") == null || document.get("country") == null;
     }
 
 

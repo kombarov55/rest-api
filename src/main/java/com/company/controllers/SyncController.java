@@ -1,6 +1,7 @@
 package com.company.controllers;
 
 import com.company.repositories.SyncRepository;
+import com.mongodb.MongoWriteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import spark.Request;
@@ -22,9 +23,8 @@ public class SyncController {
             return buildErrorResponse("No uuid parameter specified.");
         }
 
-
         String json = syncRepository.get(uuid);
-        resp.status(json.isEmpty() ? 200 : 500);
+        resp.status(json.isEmpty() ? 500 : 200);
         return json;
     }
 
@@ -32,18 +32,11 @@ public class SyncController {
         String uuid = req.queryParams("uuid");
         String data = req.queryParams("data");
 
-        if (uuid == null) {
-            return buildErrorResponse("No uuid parameter specified.");
-        }
-
-        if (data == null) {
-            return buildErrorResponse("No data parameter specified.");
-        }
-
         try {
             String status = syncRepository.saveOrUpdate(uuid, data);
             return buildResponse(status);
-        } catch (ControllerException e) {
+        } catch (ControllerException|MongoWriteException e) {
+            resp.status(418);
             return buildErrorResponse(e.getMessage());
         }
     }
