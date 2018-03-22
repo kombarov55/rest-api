@@ -42,7 +42,7 @@ public class SyncTests {
         HttpResponse resp = executePut(params);
         assertEquals(200, resp.getStatusLine().getStatusCode());
 
-        HttpGet get = new HttpGet("http://localhost:4567/sync?uuid=" + params.get("uuid"));
+        HttpGet get = new HttpGet("http://localhost:8080/sync?uuid=" + params.get("uuid"));
         resp = client.execute(get);
 
         String strResponse = readStream(resp.getEntity().getContent());
@@ -114,7 +114,7 @@ public class SyncTests {
     }
 
     private HttpResponse executePut(Map<String, Object> params) throws Exception {
-        HttpPut put = new HttpPut("http://localhost:4567/sync");
+        HttpPut put = new HttpPut("http://localhost:8080/sync");
 
         List<NameValuePair> httpParams = new ArrayList<>();
 

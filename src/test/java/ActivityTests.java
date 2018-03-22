@@ -31,7 +31,7 @@ public class ActivityTests {
 
     @Test
     public void saveActivity() throws Exception {
-        HttpPost post = new HttpPost("http://localhost:4567/activity");
+        HttpPost post = new HttpPost("http://localhost:8080/activity");
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("uuid", UUID.randomUUID().toString()));
         params.add(new BasicNameValuePair("activity", "1"));

@@ -1,0 +1,5 @@
+Запросы для проверки проверки что всё работает:
+
+curl localhost:8080/sync -X PUT -d uuid=759C8248-B316-456A-911E-2020A0241E66 -d data='{money: 3000, country: "RU"}'
+curl localhost:8080/sync?uuid=759C8248-B316-456A-911E-2020A0241E66
+curl localhost:8080/activity -X POST -d uuid=759C8248-B316-456A-911E-2020A0241E66 -d activity=1
