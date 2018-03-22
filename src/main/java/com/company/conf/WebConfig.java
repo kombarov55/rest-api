@@ -17,6 +17,8 @@ public class WebConfig {
     private ActivityController activityController;
 
     public WebConfig() {
+        port(80);
+        get("/", (req, resp) -> "hello world!");
         path("/sync", () -> {
             put("", (req, resp) -> syncController.saveOrUpdateEntry(req, resp));
             get("", (req, resp) -> syncController.getEntry(req, resp));

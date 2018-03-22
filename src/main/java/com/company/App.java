@@ -7,11 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 @ComponentScan({"com.company"})
 public class App {
 
-    private static String HOST = "localhost";
+    private static String HOST = "mongo-server";
     private static int PORT = 27017;
 
 
